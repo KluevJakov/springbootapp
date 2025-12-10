@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: insertAdminRole
+      author: kliuevia
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: ad6917e1-19d1-418d-a917-e119d1018d3b
+              - column:
+                  name: name
+                  value: ADMIN

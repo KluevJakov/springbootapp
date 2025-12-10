@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumnsToUser
+      author: kliuevia
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: activation_code
+                  type: uuid
+              - column:
+                  name: enable
+                  type: boolean

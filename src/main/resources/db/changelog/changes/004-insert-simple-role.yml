@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: insertSimpleRole
+      author: kliuevia
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  value: 9c8bef81-94e7-498c-8bef-8194e7798cda
+              - column:
+                  name: name
+                  value: USER

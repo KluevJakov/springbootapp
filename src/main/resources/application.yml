@@ -1,0 +1,36 @@
+user:
+  enable: true
+
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/test
+    username: postgres
+    password: postgres
+  jpa:
+    #show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        #format_sql: true
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yml
+
+smsapi:
+  url: "http://localhost:8085/messaging/v1/SendSMS"
+  alfa-name: "АПТЕК ТЕХНОЛОДЖИС"
+
+jwt:
+  access:
+    seed: astr2345in5gsecr234etat256bi2345tslfasd34fAFAfsdF4356fDFSDon2345g2
+    expiration: 360_000
+  refresh:
+    seed: asgaDSAFsdaafgSDFgsecr243236bi2345345fAFAfsdF4356fDF23FDFREWRWERWERWER
+    expiration: 1_200_000
+
+server:
+  port: 8081
