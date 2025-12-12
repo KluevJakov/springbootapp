@@ -27,6 +27,9 @@ import static ru.kliuevia.springapp.entity.enums.TokenType.ACCESS;
 @RequiredArgsConstructor
 public class JwtService {
 
+    public static final String USER_ID = "userId";
+    public static final String ROLE = "role";
+
     @Value("${jwt.access.expiration}")
     private String accessExpirationTime;
     @Value("${jwt.access.seed}")
@@ -92,10 +95,10 @@ public class JwtService {
     public JwtAuthentication authentication(Claims claims) {
         JwtAuthentication authentication = new JwtAuthentication();
         authentication.setRoles(List.of(Role.builder()
-                        .name(claims.get("role", String.class))
+                        .name(claims.get(ROLE, String.class))
                 .build()));
         authentication.setUsername(claims.getSubject());
-        authentication.setUserId(claims.get("userId", String.class));
+        authentication.setUserId(claims.get(USER_ID, String.class));
         authentication.setAuthenticated(true);
         return authentication;
     }
