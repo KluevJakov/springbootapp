@@ -51,19 +51,20 @@ public class UserService {
                 .build());
         user.setActivationCode(UUID.randomUUID());
 
-        ResponseEntity<StatusDto> response = restTemplate.postForEntity(SMS_API_URL,
-                SendSmsRequestDto.builder()
-                        .destination(user.getLogin())
-                        .number(ALFA_NAME)
-                        .text(String.format(Constants.Sms.TEXT, user.getActivationCode()))
-                        .build(),
-                StatusDto.class);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            log.info("SMS активация успешно отправлена");
-        } else {
-            log.error("Ошибка интеграции с SMS API");
-        }
+        try {
+            ResponseEntity<StatusDto> response = restTemplate.postForEntity(SMS_API_URL,
+                    SendSmsRequestDto.builder()
+                            .destination(user.getLogin())
+                            .number(ALFA_NAME)
+                            .text(String.format(Constants.Sms.TEXT, user.getActivationCode()))
+                            .build(),
+                    StatusDto.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                log.info("SMS активация успешно отправлена");
+            } else {
+                log.error("Ошибка интеграции с SMS API");
+            }
+        } catch (Exception ignored) {}
 
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
