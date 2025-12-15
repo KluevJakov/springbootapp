@@ -5,12 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Slf4j
 @Service
@@ -38,9 +39,10 @@ public class FileService {
             throw new IllegalArgumentException("Файл должен иметь расширение .pdf!");
         }
 
-        String destination = STORAGE_PATH + filename;
+        Path storagePath = Paths.get(STORAGE_PATH);
+        Path destinationPath = storagePath.resolve(filename);
 
-        try (OutputStream fos = new FileOutputStream(destination)) {
+        try (OutputStream fos = new FileOutputStream(destinationPath.toFile())) {
             fos.write(file.getBytes());
         } catch (IOException e) {
             log.error("Ошибка записи файла {}", e.getMessage());
@@ -49,11 +51,15 @@ public class FileService {
 
 
     public Resource get(String filename) {
-        //TODO: prevent trailing path attack
-        String destination = STORAGE_PATH + filename;
+        if (filename.contains("..")) {
+            throw new IllegalArgumentException("Ошибка в запросе файла");
+        }
+
+        Path storagePath = Paths.get(STORAGE_PATH);
+        Path destinationPath = storagePath.resolve(filename);
 
         try {
-            return new UrlResource(ResourceUtils.toURI(destination));
+            return new UrlResource(destinationPath.toUri());
         } catch (Exception e) {
             return null;
         }
