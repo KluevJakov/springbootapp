@@ -27,6 +27,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/files/**").authenticated()
+                        .requestMatchers("/mail").authenticated()
 
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
 
