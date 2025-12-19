@@ -1,55 +1,55 @@
 package ru.kliuevia.springapp.controller;
 
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.kliuevia.springapp.entity.dto.request.UserCreateRequestDto;
-import ru.kliuevia.springapp.entity.dto.request.UserUpdateRequestDto;
+import ru.kliuevia.springapp.entity.dto.ErrorResponse;
 import ru.kliuevia.springapp.entity.dto.response.UserResponseDto;
-import ru.kliuevia.springapp.service.UserService;
 
-import java.util.List;
 import java.util.UUID;
 
-@Slf4j
-@RestController
-@RequestMapping("/users")
-@RequiredArgsConstructor
-public class UserController {
+@Tag(name = "Пользователи", description = "Операции над пользователями приложения")
+public interface UserController {
 
-    private final UserService userService;
-
-    @GetMapping("/{uuid}")
-    public ResponseEntity<UserResponseDto> findById(@PathVariable("uuid") UUID userId) {
-        return ResponseEntity.ok(userService.getByUuid(userId));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserResponseDto>> findAll() {
-        return ResponseEntity.ok(userService.getAll());
-    }
-
-    @PostMapping
-    public ResponseEntity<UserResponseDto> save(@RequestBody @Valid UserCreateRequestDto user) {
-        return ResponseEntity.ok(userService.save(user));
-    }
-
-    @PostMapping("/activate/{uuid}")
-    public ResponseEntity<UserResponseDto> activate(@PathVariable("uuid") UUID activationCode) {
-        userService.activate(activationCode);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping
-    public ResponseEntity<UserResponseDto> update(@RequestBody @Valid UserUpdateRequestDto user) {
-        return ResponseEntity.ok(userService.edit(user));
-    }
-
-    @DeleteMapping("/{uuid}")
-    public ResponseEntity<Void> deleteById(@PathVariable("uuid") UUID userId) {
-        userService.delete(userId);
-        return ResponseEntity.ok().build();
-    }
+    @Operation(summary = "Активировать учетную запись пользователя",
+            description = "По полученному SMS пользователь активирует свой аккаунт для входа")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешная активация",
+                    content = @Content(
+                            schema = @Schema(implementation = UserResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Требуется аутентификация",
+                    content = @Content(schema = @Schema())
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Не хватает прав доступа",
+                    content = @Content(schema = @Schema())
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Ошибка валидации запроса",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(schema = @Schema())
+            )
+    })
+    ResponseEntity<UserResponseDto> activate(
+            @Parameter(description = "Код активации, направленный по SMS", example = "9e5e6264-e55f-427e-9e62-64e55f127ee3")
+            UUID activationCode);
 }

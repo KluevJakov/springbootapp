@@ -1,0 +1,376 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /users:
+    get:
+      tags:
+      - user-controller
+      operationId: findAll
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserResponseDto"
+    put:
+      tags:
+      - user-controller
+      operationId: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateRequestDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponseDto"
+    post:
+      tags:
+      - user-controller
+      operationId: save
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateRequestDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponseDto"
+  /roles:
+    get:
+      tags:
+      - role-controller
+      operationId: findAll_1
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoleDto"
+    put:
+      tags:
+      - role-controller
+      operationId: update_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleDto"
+    post:
+      tags:
+      - role-controller
+      operationId: save_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleDto"
+  /users/activate/{uuid}:
+    post:
+      tags:
+      - user-controller
+      operationId: activate
+      parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponseDto"
+  /mail:
+    post:
+      tags:
+      - mail-controller
+      operationId: send
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MailSendDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /files:
+    post:
+      tags:
+      - file-controller
+      operationId: upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+              - file
+      responses:
+        "200":
+          description: OK
+  /auth/refreshToken:
+    post:
+      tags:
+      - auth-controller
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JwtRefreshRequestDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/JwtResponseDto"
+  /auth/accessToken:
+    post:
+      tags:
+      - auth-controller
+      operationId: accessToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JwtAccessRequestDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/JwtResponseDto"
+  /users/{uuid}:
+    get:
+      tags:
+      - user-controller
+      operationId: findById
+      parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserResponseDto"
+    delete:
+      tags:
+      - user-controller
+      operationId: deleteById
+      parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+  /roles/{uuid}:
+    get:
+      tags:
+      - role-controller
+      operationId: findById_1
+      parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/RoleDto"
+    delete:
+      tags:
+      - role-controller
+      operationId: deleteById_1
+      parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+  /files/{filename}:
+    get:
+      tags:
+      - file-controller
+      operationId: download
+      parameters:
+      - name: filename
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+components:
+  schemas:
+    RoleDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
+    UserUpdateRequestDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          minLength: 1
+        login:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        groupNumber:
+          type: integer
+          format: int32
+        role:
+          $ref: "#/components/schemas/RoleDto"
+      required:
+      - id
+      - login
+      - password
+    UserResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        login:
+          type: string
+        groupNumber:
+          type: integer
+          format: int32
+        role:
+          $ref: "#/components/schemas/RoleDto"
+    UserCreateRequestDto:
+      type: object
+      properties:
+        login:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        groupNumber:
+          type: integer
+          format: int32
+      required:
+      - login
+      - password
+    MailSendDto:
+      type: object
+      properties:
+        subject:
+          type: string
+        to:
+          type: string
+        text:
+          type: string
+    JwtRefreshRequestDto:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          minLength: 1
+      required:
+      - refreshToken
+    JwtResponseDto:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    JwtAccessRequestDto:
+      type: object
+      properties:
+        login:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required:
+      - login
+      - password
