@@ -17,6 +17,20 @@ spring:
     multipart:
       max-file-size: 32MB
       max-request-size: 32MB
+  mail:
+    host:
+    port:
+    username:
+    password:
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            enable: true
 
 smsapi:
   url: "http://localhost:8085/messaging/v1/SendSMS"
