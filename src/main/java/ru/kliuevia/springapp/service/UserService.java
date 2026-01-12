@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -101,6 +102,7 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
+    @Cacheable(cacheNames = "userById", key = "#id")
     public UserResponseDto getByUuid(UUID uuid) {
         return userRepository.findById(uuid)
                 .map(userMapper::toDto)
