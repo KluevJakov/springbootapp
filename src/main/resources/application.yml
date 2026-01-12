@@ -31,8 +31,14 @@ spring:
             enable: true
           ssl:
             enable: true
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.VoidSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 smsapi:
+  topic: "SMS_REQUEST"
   url: "http://localhost:8085/messaging/v1/SendSMS"
   alfa-name: "АПТЕК ТЕХНОЛОДЖИС"
 

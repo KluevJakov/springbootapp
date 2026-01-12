@@ -1,16 +1,16 @@
 package ru.kliuevia.springapp.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.kliuevia.springapp.config.Constants;
 import ru.kliuevia.springapp.entity.Role;
 import ru.kliuevia.springapp.entity.User;
-import ru.kliuevia.springapp.entity.dto.StatusDto;
 import ru.kliuevia.springapp.entity.dto.request.SendSmsRequestDto;
 import ru.kliuevia.springapp.entity.dto.request.UserCreateRequestDto;
 import ru.kliuevia.springapp.entity.dto.request.UserUpdateRequestDto;
@@ -35,6 +35,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final RestTemplate restTemplate;
+    private final KafkaService kafkaService;
+    private final ObjectMapper objectMapper;
 
     public UserResponseDto save(UserCreateRequestDto userDto) {
         boolean userExists = userRepository.existsByLogin(userDto.getLogin());
@@ -51,20 +53,34 @@ public class UserService {
                 .build());
         user.setActivationCode(UUID.randomUUID());
 
+//        try {
+//            ResponseEntity<StatusDto> response = restTemplate.postForEntity(SMS_API_URL,
+//                    SendSmsRequestDto.builder()
+//                            .destination(user.getLogin())
+//                            .number(ALFA_NAME)
+//                            .text(String.format(Constants.Sms.TEXT, user.getActivationCode()))
+//                            .build(),
+//                    StatusDto.class);
+//            if (response.getStatusCode().is2xxSuccessful()) {
+//                log.info("SMS активация успешно отправлена");
+//            } else {
+//                log.error("Ошибка интеграции с SMS API");
+//            }
+//        } catch (Exception ignored) {}
+
         try {
-            ResponseEntity<StatusDto> response = restTemplate.postForEntity(SMS_API_URL,
-                    SendSmsRequestDto.builder()
-                            .destination(user.getLogin())
-                            .number(ALFA_NAME)
-                            .text(String.format(Constants.Sms.TEXT, user.getActivationCode()))
-                            .build(),
-                    StatusDto.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                log.info("SMS активация успешно отправлена");
-            } else {
-                log.error("Ошибка интеграции с SMS API");
-            }
-        } catch (Exception ignored) {}
+            String value = objectMapper.writeValueAsString(SendSmsRequestDto.builder()
+                    .destination(user.getLogin())
+                    .number(ALFA_NAME)
+                    .text(String.format(Constants.Sms.TEXT, user.getActivationCode()))
+                    .build());
+
+            kafkaService.publish(value);
+        } catch (JsonProcessingException e) {
+            log.error("Произошла ошибка при сериализации для отправки запроса в mocksmsapi, {}", e.getMessage());
+        } catch (Exception e) {
+            log.error("Произошла ошибка при отправке сообщения в кафку {}", e.getMessage());
+        }
 
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
