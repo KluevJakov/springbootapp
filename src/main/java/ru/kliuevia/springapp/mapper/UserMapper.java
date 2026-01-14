@@ -11,6 +11,7 @@ import ru.kliuevia.springapp.entity.dto.response.UserResponseDto;
 @Mapper(componentModel = "spring", uses = RoleMapper.class)
 public interface UserMapper {
 
+    @Mapping(target = "description", ignore = true)
     @Mapping(target = "enable", ignore = true)
     @Mapping(target = "activationCode", ignore = true)
     @Mapping(target = "id", ignore = true)

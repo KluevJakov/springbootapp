@@ -1,6 +1,7 @@
 package ru.kliuevia.springapp.entity.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class UserUpdateRequestDto {
-    @NotBlank(message = "При редактировании поле 'id' обязательное")
+    @NotNull(message = "При редактировании поле 'id' обязательное")
     private UUID id;
     @NotBlank(message = "Логин не может быть пустым")
     private String login;

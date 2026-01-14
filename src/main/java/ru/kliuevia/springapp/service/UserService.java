@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import ru.kliuevia.springapp.entity.dto.request.SendSmsRequestDto;
 import ru.kliuevia.springapp.entity.dto.request.UserCreateRequestDto;
 import ru.kliuevia.springapp.entity.dto.request.UserUpdateRequestDto;
 import ru.kliuevia.springapp.entity.dto.response.UserResponseDto;
+import ru.kliuevia.springapp.exceptions.NotFoundException;
 import ru.kliuevia.springapp.mapper.UserMapper;
 import ru.kliuevia.springapp.repository.UserRepository;
 
@@ -87,10 +90,13 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
+    @CacheEvict(cacheNames = "users", key = "#uuid")
     public void delete(UUID uuid) {
         userRepository.deleteById(uuid);
     }
 
+
+    @CachePut(cacheNames = "users", key = "#result.id")
     public UserResponseDto edit(UserUpdateRequestDto newData) {
         User oldUser = userRepository.findById(newData.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким логином не существует"));
@@ -102,11 +108,11 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
-    @Cacheable(cacheNames = "userById", key = "#id")
+    @Cacheable(cacheNames = "users", key = "#uuid")
     public UserResponseDto getByUuid(UUID uuid) {
         return userRepository.findById(uuid)
                 .map(userMapper::toDto)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден по id: " + uuid));
     }
 
     public List<UserResponseDto> getAll() {

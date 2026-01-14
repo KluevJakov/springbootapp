@@ -26,26 +26,26 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/swagger-ui.html").permitAll()
-                        .requestMatchers("/v3/api-docs.yaml").permitAll()
+//                        .requestMatchers("/v3/api-docs/**").permitAll()
+//                        .requestMatchers("/swagger-ui/**").permitAll()
+//                        .requestMatchers("/swagger-ui.html").permitAll()
+//                        .requestMatchers("/v3/api-docs.yaml").permitAll()
+//
+//                        .requestMatchers("/files/**").authenticated()
+//                        .requestMatchers("/mail").authenticated()
+//
+//                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+//
+//                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/users/activate/**").permitAll()
+//
+//                        .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
+//
+//                        .requestMatchers("/roles/**").hasAuthority(Constants.Roles.ADMIN_AUTHORITY)
+//                        .requestMatchers(HttpMethod.PUT, "/users").hasAuthority(Constants.Roles.ADMIN_AUTHORITY)
+//                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority(Constants.Roles.ADMIN_AUTHORITY)
 
-                        .requestMatchers("/files/**").authenticated()
-                        .requestMatchers("/mail").authenticated()
-
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/activate/**").permitAll()
-
-                        .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
-
-                        .requestMatchers("/roles/**").hasAuthority(Constants.Roles.ADMIN_AUTHORITY)
-                        .requestMatchers(HttpMethod.PUT, "/users").hasAuthority(Constants.Roles.ADMIN_AUTHORITY)
-                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority(Constants.Roles.ADMIN_AUTHORITY)
-
-                        .anyRequest().denyAll()
+                        .anyRequest().permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)

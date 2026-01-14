@@ -25,7 +25,6 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    //private final RedisTemplate<String, Integer> redisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
     private final JwtMapper jwtMapper;
 
@@ -38,8 +37,6 @@ public class AuthService {
             SecurityContextHolder.getContext().setAuthentication(token);
             User authenticatedUser = (User) token.getPrincipal();
 
-            stringRedisTemplate.opsForValue()
-                            .increment(authenticatedUser.getId().toString());
 
             log.info("Пользователь {} успешно вошел в систему", jwtAccessRequestDto.getLogin());
             return jwtMapper.toJwtResponseDto(jwtService.pairTokens(jwtAccessRequestDto.getLogin(), authenticatedUser));

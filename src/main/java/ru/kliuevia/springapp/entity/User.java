@@ -34,6 +34,8 @@ public class User implements UserDetails {
     @Column(name = "activation_code")
     private UUID activationCode;
 
+    private String description;
+
     private boolean enable;
 
     @Override
