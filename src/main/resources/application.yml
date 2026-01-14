@@ -23,25 +23,31 @@ spring:
     multipart:
       max-file-size: 32MB
       max-request-size: 32MB
-  mail:
-    host:
-    port:
-    username:
-    password:
-    properties:
-      mail:
-        debug: true
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-          ssl:
-            enable: true
+#  mail:
+#    host:
+#    port:
+#    username:
+#    password:
+#    properties:
+#      mail:
+#        debug: true
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#          ssl:
+#            enable: true
   kafka:
     producer:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.VoidSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 smsapi:
   topic: "SMS_REQUEST"
