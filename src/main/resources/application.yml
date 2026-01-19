@@ -1,4 +1,6 @@
 spring:
+  scheduling:
+    enabled: true
   cache:
     type: redis
   datasource:

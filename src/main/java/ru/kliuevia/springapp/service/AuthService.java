@@ -3,7 +3,6 @@ package ru.kliuevia.springapp.service;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -25,7 +24,6 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final StringRedisTemplate stringRedisTemplate;
     private final JwtMapper jwtMapper;
 
     public JwtResponseDto accessToken (JwtAccessRequestDto jwtAccessRequestDto) {
